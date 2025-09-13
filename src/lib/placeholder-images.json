@@ -1,3 +1,10 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "data-forge-logo",
+      "description": "Abstract data visualization for logo",
+      "imageUrl": "https://picsum.photos/seed/100/200/200",
+      "imageHint": "data abstract"
+    }
+  ]
 }
