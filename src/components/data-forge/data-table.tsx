@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from 'react';
+import Link from 'next/link';
 import { MoreHorizontal, ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -165,7 +166,11 @@ export function DataTable({
                       className="translate-y-[2px]"
                     />
                   </TableCell>
-                  <TableCell className="font-medium">{product.name}</TableCell>
+                  <TableCell className="font-medium">
+                    <Link href={`/products/${product.id}`} className="hover:underline">
+                      {product.name}
+                    </Link>
+                  </TableCell>
                   <TableCell>
                     <Badge variant="outline" className={categoryColors[product.category] || ''}>
                       {product.category}
