@@ -19,9 +19,18 @@ export class MySubClassedDexie extends Dexie {
 
   async seed() {
     const count = await this.postcards.count();
-    if (count === 0) {
-      console.log("Seeding database with initial data...");
+    const initialDataIds = initialPostcards.map(p => p.id);
+    const dbIds = (await this.postcards.toCollection().keys()).map(String);
+    
+    // Check if the IDs in the DB match the initial data IDs. If not, re-seed.
+    const isMismatched = initialDataIds.length !== dbIds.length || !initialDataIds.every(id => dbIds.includes(id));
+
+    if (count === 0 || isMismatched) {
+      console.log("Seeding or re-seeding database with initial data...");
       try {
+        // Clear existing data before seeding to ensure a fresh start
+        await this.postcards.clear();
+
         // Validate initial data before adding
         const validatedPostcards = initialPostcards.filter(p => {
           const result = postcardSchema.safeParse(p);
