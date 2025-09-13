@@ -13,7 +13,7 @@ export class MySubClassedDexie extends Dexie {
     // Upgrade version to rename 'products' to 'postcards'
     this.version(2).stores({
       products: null, // Remove old table
-      postcards: '++id, name, category, price, stock',
+      postcards: 'id, name, category, price, stock',
     });
   }
 
