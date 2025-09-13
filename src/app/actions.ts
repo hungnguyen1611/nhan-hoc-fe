@@ -2,23 +2,23 @@
 "use server";
 
 import { validateSchema } from "@/ai/flows/schema-validation";
-import { productSchema } from "@/lib/schema";
+import { postcardSchema } from "@/lib/schema";
 
-export async function validateProductData(data: unknown) {
+export async function validatePostcardData(data: unknown) {
   const schemaDescription = `
-    A product object with the following fields:
+    A postcard object with the following fields:
     - id: string (unique identifier, should not be changed)
     - name: string (must be at least 3 characters long)
-    - category: one of "Electronics", "Clothing", "Books", "Home Goods", "Groceries"
+    - category: one of "Travel", "Art", "Greeting", "Vintage", "Holiday"
     - price: a positive number
     - stock: a non-negative integer
-    - description: string (optional, a brief summary of the product)
+    - description: string (optional, a brief summary of the postcard)
   `;
 
   // First, basic Zod validation to ensure structure is roughly correct for the AI
-  const parsedForAI = productSchema.partial().safeParse(data);
+  const parsedForAI = postcardSchema.partial().safeParse(data);
   if (!parsedForAI.success || typeof parsedForAI.data !== 'object' || parsedForAI.data === null) {
-    return { isValid: false, validationErrors: ["Invalid data structure"], reasoning: "The provided data does not match the basic product structure." };
+    return { isValid: false, validationErrors: ["Invalid data structure"], reasoning: "The provided data does not match the basic postcard structure." };
   }
 
   // Then call the AI validation flow

@@ -30,37 +30,37 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Product, productSchema, productCategories } from '@/lib/schema';
-import { validateProductData } from '@/app/actions';
+import { Postcard, postcardSchema, postcardCategories } from '@/lib/schema';
+import { validatePostcardData } from '@/app/actions';
 import { Textarea } from '@/components/ui/textarea';
 
 interface EditDialogProps {
-  product: Product;
+  postcard: Postcard;
   onOpenChange: (open: boolean) => void;
-  onSave: (product: Product) => void;
+  onSave: (postcard: Postcard) => void;
 }
 
-export function EditDialog({ product, onOpenChange, onSave }: EditDialogProps) {
+export function EditDialog({ postcard, onOpenChange, onSave }: EditDialogProps) {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [aiError, setAiError] = React.useState<string | null>(null);
 
-  const form = useForm<Product>({
-    resolver: zodResolver(productSchema),
-    defaultValues: product,
+  const form = useForm<Postcard>({
+    resolver: zodResolver(postcardSchema),
+    defaultValues: postcard,
   });
 
-  const onSubmit = async (values: Product) => {
+  const onSubmit = async (values: Postcard) => {
     setIsSubmitting(true);
     setAiError(null);
     form.clearErrors();
 
-    const aiValidationResult = await validateProductData(values);
+    const aiValidationResult = await validatePostcardData(values);
 
     if (!aiValidationResult.isValid) {
       setAiError(aiValidationResult.reasoning);
       aiValidationResult.validationErrors.forEach(errorMsg => {
         // Try to map AI error to a field
-        const field = (Object.keys(productSchema.shape) as (keyof Product)[]).find(key => errorMsg.toLowerCase().includes(key));
+        const field = (Object.keys(postcardSchema.shape) as (keyof Postcard)[]).find(key => errorMsg.toLowerCase().includes(key));
         form.setError(field || "root.ai", { message: errorMsg });
       });
       setIsSubmitting(false);
@@ -75,9 +75,9 @@ export function EditDialog({ product, onOpenChange, onSave }: EditDialogProps) {
     <Dialog open={true} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Edit Product</DialogTitle>
+          <DialogTitle>Edit Postcard</DialogTitle>
           <DialogDescription>
-            Make changes to the product details. AI will verify your input.
+            Make changes to the postcard details. AI will verify your input.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -93,9 +93,9 @@ export function EditDialog({ product, onOpenChange, onSave }: EditDialogProps) {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Product Name</FormLabel>
+                  <FormLabel>Postcard Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g. Wireless Mouse" {...field} />
+                    <Input placeholder="e.g. Greetings from California" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -108,7 +108,7 @@ export function EditDialog({ product, onOpenChange, onSave }: EditDialogProps) {
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Describe the product" {...field} />
+                    <Textarea placeholder="Describe the postcard" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -127,7 +127,7 @@ export function EditDialog({ product, onOpenChange, onSave }: EditDialogProps) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {productCategories.map(cat => (
+                      {postcardCategories.map(cat => (
                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                       ))}
                     </SelectContent>
@@ -144,7 +144,7 @@ export function EditDialog({ product, onOpenChange, onSave }: EditDialogProps) {
                     <FormItem>
                     <FormLabel>Price</FormLabel>
                     <FormControl>
-                        <Input type="number" step="0.01" placeholder="e.g. 49.99" {...field} />
+                        <Input type="number" step="0.01" placeholder="e.g. 1.99" {...field} />
                     </FormControl>
                     <FormMessage />
                     </FormItem>
@@ -157,7 +157,7 @@ export function EditDialog({ product, onOpenChange, onSave }: EditDialogProps) {
                     <FormItem>
                     <FormLabel>Stock</FormLabel>
                     <FormControl>
-                        <Input type="number" placeholder="e.g. 200" {...field} />
+                        <Input type="number" placeholder="e.g. 100" {...field} />
                     </FormControl>
                     <FormMessage />
                     </FormItem>

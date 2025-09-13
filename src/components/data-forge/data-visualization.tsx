@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Pie, PieChart as RechartsPieChart, Cell, Legend } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { Product, productCategories } from "@/lib/schema";
+import { Postcard, postcardCategories } from "@/lib/schema";
 
 const CHART_COLORS = [
   "hsl(var(--chart-1))",
@@ -14,21 +14,21 @@ const CHART_COLORS = [
   "hsl(var(--chart-5))",
 ];
 
-export function DataVisualization({ data }: { data: Product[] }) {
+export function DataVisualization({ data }: { data: Postcard[] }) {
 
   const categoryData = React.useMemo(() => {
-    const counts = data.reduce((acc, product) => {
-      acc[product.category] = (acc[product.category] || 0) + 1;
+    const counts = data.reduce((acc, postcard) => {
+      acc[postcard.category] = (acc[postcard.category] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
-    return productCategories.map(category => ({
+    return postcardCategories.map(category => ({
       category,
       count: counts[category] || 0
     }));
   }, [data]);
 
   const stockDistributionData = React.useMemo(() => {
-    return productCategories.map(category => {
+    return postcardCategories.map(category => {
       const totalStock = data
         .filter(p => p.category === category)
         .reduce((sum, p) => sum + p.stock, 0);
@@ -43,8 +43,8 @@ export function DataVisualization({ data }: { data: Product[] }) {
     <div className="grid gap-6 md:grid-cols-2">
       <Card>
         <CardHeader>
-          <CardTitle>Products per Category</CardTitle>
-          <CardDescription>Count of products in each category.</CardDescription>
+          <CardTitle>Postcards per Category</CardTitle>
+          <CardDescription>Count of postcards in each category.</CardDescription>
         </CardHeader>
         <CardContent>
           <ChartContainer config={{}} className="h-64 w-full">

@@ -19,11 +19,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Product, productCategories } from '@/lib/schema';
+import { Postcard, postcardCategories } from '@/lib/schema';
 
 interface BatchEditDialogProps {
   onOpenChange: (open: boolean) => void;
-  onBatchUpdate: (field: keyof Product, value: string | number) => void;
+  onBatchUpdate: (field: keyof Postcard, value: string | number) => void;
 }
 
 type EditableField = 'category' | 'price' | 'stock';
@@ -54,7 +54,7 @@ export function BatchEditDialog({ onOpenChange, onBatchUpdate }: BatchEditDialog
               <SelectValue placeholder="Select new category" />
             </SelectTrigger>
             <SelectContent>
-              {productCategories.map(cat => (
+              {postcardCategories.map(cat => (
                 <SelectItem key={cat} value={cat}>{cat}</SelectItem>
               ))}
             </SelectContent>
@@ -73,9 +73,9 @@ export function BatchEditDialog({ onOpenChange, onBatchUpdate }: BatchEditDialog
     <Dialog open={true} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Batch Edit Products</DialogTitle>
+          <DialogTitle>Batch Edit Postcards</DialogTitle>
           <DialogDescription>
-            Update a single field for all selected products.
+            Update a single field for all selected postcards.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">

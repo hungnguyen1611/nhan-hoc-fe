@@ -4,14 +4,14 @@ import { FileDown, Search, Trash2, Edit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Product } from '@/lib/schema';
+import { Postcard } from '@/lib/schema';
 import { exportToCsv, exportToJson } from '@/lib/utils';
 
 interface ToolbarProps {
   searchQuery: string;
   onSearchQueryChange: (query: string) => void;
   selectedIds: Set<string>;
-  data: Product[];
+  data: Postcard[];
   onBatchEdit: () => void;
   onBatchDelete: () => void;
 }
@@ -28,12 +28,12 @@ export function Toolbar({
 
   const handleExportCSV = () => {
     const selectedData = data.filter(item => selectedIds.has(item.id));
-    exportToCsv('products.csv', selectedData.length > 0 ? selectedData : data);
+    exportToCsv('postcards.csv', selectedData.length > 0 ? selectedData : data);
   };
 
   const handleExportJSON = () => {
     const selectedData = data.filter(item => selectedIds.has(item.id));
-    exportToJson('products.json', selectedData.length > 0 ? selectedData : data);
+    exportToJson('postcards.json', selectedData.length > 0 ? selectedData : data);
   };
 
   return (
@@ -42,7 +42,7 @@ export function Toolbar({
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
           type="search"
-          placeholder="Search products..."
+          placeholder="Search postcards..."
           value={searchQuery}
           onChange={(e) => onSearchQueryChange(e.target.value)}
           className="pl-10"

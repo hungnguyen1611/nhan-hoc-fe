@@ -21,18 +21,18 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Product } from '@/lib/schema';
+import { Postcard } from '@/lib/schema';
 import { Toolbar } from './toolbar';
 
-type SortKey = keyof Product | null;
+type SortKey = keyof Postcard | null;
 type SortDirection = 'asc' | 'desc';
 
 const categoryColors: { [key: string]: string } = {
-  Electronics: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-  Clothing: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
-  Books: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-  'Home Goods': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-  Groceries: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+  Travel: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+  Art: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
+  Greeting: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+  Vintage: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+  Holiday: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
 };
 
 
@@ -46,18 +46,18 @@ export function DataTable({
   onBatchDelete,
   searchQuery,
   onSearchQueryChange,
-  allProductIds,
+  allPostcardIds,
 }: {
-  data: Product[];
+  data: Postcard[];
   selectedIds: Set<string>;
   onSelectedIdsChange: (ids: Set<string>) => void;
-  onEdit: (product: Product) => void;
+  onEdit: (postcard: Postcard) => void;
   onDelete: (id: string) => void;
   onBatchEdit: () => void;
   onBatchDelete: () => void;
   searchQuery: string;
   onSearchQueryChange: (query: string) => void;
-  allProductIds: string[];
+  allPostcardIds: string[];
 }) {
   const router = useRouter();
   const [sortKey, setSortKey] = React.useState<SortKey>('name');
@@ -85,7 +85,7 @@ export function DataTable({
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      onSelectedIdsChange(new Set(allProductIds));
+      onSelectedIdsChange(new Set(allPostcardIds));
     } else {
       onSelectedIdsChange(new Set());
     }
@@ -101,7 +101,7 @@ export function DataTable({
     onSelectedIdsChange(newSelectedIds);
   };
 
-  const handleSort = (key: keyof Product) => {
+  const handleSort = (key: keyof Postcard) => {
     if (sortKey === key) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
@@ -110,14 +110,14 @@ export function DataTable({
     }
   };
 
-  const handleRowClick = (productId: string) => {
-    router.push(`/products/${productId}`);
+  const handleRowClick = (postcardId: string) => {
+    router.push(`/postcards/${postcardId}`);
   };
 
-  const isAllSelected = selectedIds.size > 0 && selectedIds.size === allProductIds.length;
-  const isIndeterminate = selectedIds.size > 0 && selectedIds.size < allProductIds.length;
+  const isAllSelected = selectedIds.size > 0 && selectedIds.size === allPostcardIds.length;
+  const isIndeterminate = selectedIds.size > 0 && selectedIds.size < allPostcardIds.length;
 
-  const renderSortableHeader = (key: keyof Product, label: string) => (
+  const renderSortableHeader = (key: keyof Postcard, label: string) => (
     <TableHead>
       <Button variant="ghost" onClick={() => handleSort(key)}>
         {label}
@@ -149,7 +149,7 @@ export function DataTable({
                   data-state={isIndeterminate ? "indeterminate" : (isAllSelected ? "checked" : "unchecked")}
                 />
               </TableHead>
-              {renderSortableHeader('name', 'Product Name')}
+              {renderSortableHeader('name', 'Postcard Name')}
               {renderSortableHeader('category', 'Category')}
               {renderSortableHeader('price', 'Price')}
               {renderSortableHeader('stock', 'Stock')}
@@ -158,33 +158,33 @@ export function DataTable({
           </TableHeader>
           <TableBody>
             {paginatedData.length > 0 ? (
-              paginatedData.map((product) => (
+              paginatedData.map((postcard) => (
                 <TableRow
-                  key={product.id}
-                  data-state={selectedIds.has(product.id) && 'selected'}
-                  onClick={() => handleRowClick(product.id)}
+                  key={postcard.id}
+                  data-state={selectedIds.has(postcard.id) && 'selected'}
+                  onClick={() => handleRowClick(postcard.id)}
                   className="cursor-pointer"
                 >
                   <TableCell padding="checkbox" onClick={(e) => e.stopPropagation()}>
                     <Checkbox
-                      checked={selectedIds.has(product.id)}
-                      onCheckedChange={(checked) => handleSelectRow(product.id, !!checked)}
+                      checked={selectedIds.has(postcard.id)}
+                      onCheckedChange={(checked) => handleSelectRow(postcard.id, !!checked)}
                       aria-label="Select row"
                       className="translate-y-[2px]"
                     />
                   </TableCell>
                   <TableCell className="font-medium">
-                    <Link href={`/products/${product.id}`} className="hover:underline" onClick={(e) => e.stopPropagation()}>
-                      {product.name}
+                    <Link href={`/postcards/${postcard.id}`} className="hover:underline" onClick={(e) => e.stopPropagation()}>
+                      {postcard.name}
                     </Link>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline" className={categoryColors[product.category] || ''}>
-                      {product.category}
+                    <Badge variant="outline" className={categoryColors[postcard.category] || ''}>
+                      {postcard.category}
                     </Badge>
                   </TableCell>
-                  <TableCell>${product.price.toFixed(2)}</TableCell>
-                  <TableCell>{product.stock}</TableCell>
+                  <TableCell>${postcard.price.toFixed(2)}</TableCell>
+                  <TableCell>{postcard.stock}</TableCell>
                   <TableCell onClick={(e) => e.stopPropagation()}>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -194,10 +194,10 @@ export function DataTable({
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => onEdit(product)}>
+                        <DropdownMenuItem onClick={() => onEdit(postcard)}>
                           Edit
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onDelete(product.id)}>
+                        <DropdownMenuItem onClick={() => onDelete(postcard.id)}>
                           Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>

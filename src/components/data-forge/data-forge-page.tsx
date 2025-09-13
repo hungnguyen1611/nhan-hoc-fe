@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { Product } from '@/lib/schema';
+import { Postcard } from '@/lib/schema';
 import { db } from '@/lib/db';
 import { DataVisualization } from './data-visualization';
 import { DataTable } from './data-table';
@@ -11,7 +11,7 @@ import { EditDialog } from './edit-dialog';
 import { BatchEditDialog } from './batch-edit-dialog';
 import { useToast } from '@/hooks/use-toast';
 
-export function DataForgePage({ initialData }: { initialData: Product[] }) {
+export function DataForgePage({ initialData }: { initialData: Postcard[] }) {
   const { toast } = useToast();
 
   // Seed the database on initial load
@@ -26,77 +26,77 @@ export function DataForgePage({ initialData }: { initialData: Product[] }) {
     });
   }, []);
   
-  const allData = useLiveQuery(() => db.products.toArray(), [], [] as Product[]);
+  const allData = useLiveQuery(() => db.postcards.toArray(), [], [] as Postcard[]);
 
   const [searchQuery, setSearchQuery] = React.useState('');
   const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set());
   
-  const [editingProduct, setEditingProduct] = React.useState<Product | null>(null);
+  const [editingPostcard, setEditingPostcard] = React.useState<Postcard | null>(null);
   const [isBatchEditing, setIsBatchEditing] = React.useState(false);
 
   const filteredData = React.useMemo(() => {
     if (!searchQuery) return allData;
-    return allData.filter((product) =>
-      Object.values(product).some((value) =>
+    return allData.filter((postcard) =>
+      Object.values(postcard).some((value) =>
         String(value).toLowerCase().includes(searchQuery.toLowerCase())
       )
     );
   }, [allData, searchQuery]);
   
-  const handleUpdateProduct = async (updatedProduct: Product) => {
+  const handleUpdatePostcard = async (updatedPostcard: Postcard) => {
     try {
-      await db.products.put(updatedProduct);
-      setEditingProduct(null);
+      await db.postcards.put(updatedPostcard);
+      setEditingPostcard(null);
       toast({
         title: "Success",
-        description: `Product "${updatedProduct.name}" has been updated.`,
+        description: `Postcard "${updatedPostcard.name}" has been updated.`,
         className: 'bg-accent text-accent-foreground',
       });
     } catch (error) {
-      console.error("Failed to update product:", error);
+      console.error("Failed to update postcard:", error);
       toast({
         variant: "destructive",
         title: "Database Error",
-        description: "Could not update the product in the local database.",
+        description: "Could not update the postcard in the local database.",
       });
     }
   };
 
-  const handleDeleteProducts = async (ids: string[]) => {
+  const handleDeletePostcards = async (ids: string[]) => {
     try {
-      await db.products.bulkDelete(ids);
+      await db.postcards.bulkDelete(ids);
       const newSelectedIds = new Set(selectedIds);
       ids.forEach(id => newSelectedIds.delete(id));
       setSelectedIds(newSelectedIds);
       toast({
-        title: "Products Deleted",
-        description: `${ids.length} product(s) have been removed.`,
+        title: "Postcards Deleted",
+        description: `${ids.length} postcard(s) have been removed.`,
       });
     } catch (error) {
-        console.error("Failed to delete products:", error);
+        console.error("Failed to delete postcards:", error);
         toast({
             variant: "destructive",
             title: "Database Error",
-            description: "Could not delete products from the local database.",
+            description: "Could not delete postcards from the local database.",
         });
     }
   };
 
-  const handleBatchUpdate = async (field: keyof Product, value: string | number) => {
+  const handleBatchUpdate = async (field: keyof Postcard, value: string | number) => {
      try {
-        const productsToUpdate = await db.products.where('id').anyOf(Array.from(selectedIds)).toArray();
-        const updatedProducts = productsToUpdate.map(p => ({ ...p, [field]: value }));
-        await db.products.bulkPut(updatedProducts);
+        const postcardsToUpdate = await db.postcards.where('id').anyOf(Array.from(selectedIds)).toArray();
+        const updatedPostcards = postcardsToUpdate.map(p => ({ ...p, [field]: value }));
+        await db.postcards.bulkPut(updatedPostcards);
 
         setIsBatchEditing(false);
         setSelectedIds(new Set());
         toast({
             title: "Batch Update Successful",
-            description: `${selectedIds.size} products have been updated.`,
+            description: `${selectedIds.size} postcards have been updated.`,
             className: 'bg-accent text-accent-foreground',
         });
     } catch (error) {
-        console.error("Failed to batch update products:", error);
+        console.error("Failed to batch update postcards:", error);
         toast({
             variant: "destructive",
             title: "Database Error",
@@ -114,29 +114,29 @@ export function DataForgePage({ initialData }: { initialData: Product[] }) {
       <DataVisualization data={allData} />
       <Card>
         <CardHeader>
-          <CardTitle>Manage Products</CardTitle>
+          <CardTitle>Manage Postcards</CardTitle>
         </CardHeader>
         <CardContent>
           <DataTable
             data={filteredData}
             selectedIds={selectedIds}
             onSelectedIdsChange={setSelectedIds}
-            onEdit={setEditingProduct}
-            onDelete={(id) => handleDeleteProducts([id])}
-            onBatchDelete={() => handleDeleteProducts(Array.from(selectedIds))}
+            onEdit={setEditingPostcard}
+            onDelete={(id) => handleDeletePostcards([id])}
+            onBatchDelete={() => handleDeletePostcards(Array.from(selectedIds))}
             onBatchEdit={() => setIsBatchEditing(true)}
             searchQuery={searchQuery}
             onSearchQueryChange={setSearchQuery}
-            allProductIds={allData.map(p => p.id)}
+            allPostcardIds={allData.map(p => p.id)}
           />
         </CardContent>
       </Card>
       
-      {editingProduct && (
+      {editingPostcard && (
         <EditDialog
-          product={editingProduct}
-          onOpenChange={(isOpen) => !isOpen && setEditingProduct(null)}
-          onSave={handleUpdateProduct}
+          postcard={editingPostcard}
+          onOpenChange={(isOpen) => !isOpen && setEditingPostcard(null)}
+          onSave={handleUpdatePostcard}
         />
       )}
 
