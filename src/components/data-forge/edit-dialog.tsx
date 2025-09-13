@@ -32,6 +32,7 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Product, productSchema, productCategories } from '@/lib/schema';
 import { validateProductData } from '@/app/actions';
+import { Textarea } from '@/components/ui/textarea';
 
 interface EditDialogProps {
   product: Product;
@@ -72,7 +73,7 @@ export function EditDialog({ product, onOpenChange, onSave }: EditDialogProps) {
 
   return (
     <Dialog open={true} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Edit Product</DialogTitle>
           <DialogDescription>
@@ -95,6 +96,19 @@ export function EditDialog({ product, onOpenChange, onSave }: EditDialogProps) {
                   <FormLabel>Product Name</FormLabel>
                   <FormControl>
                     <Input placeholder="e.g. Wireless Mouse" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Describe the product" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

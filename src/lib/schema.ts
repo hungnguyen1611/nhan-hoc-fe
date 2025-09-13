@@ -8,6 +8,7 @@ export const productSchema = z.object({
   category: z.enum(productCategories),
   price: z.coerce.number().positive("Price must be a positive number."),
   stock: z.coerce.number().int().min(0, "Stock cannot be negative."),
+  description: z.string().optional(),
 });
 
 export type Product = z.infer<typeof productSchema>;

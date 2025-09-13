@@ -12,6 +12,7 @@ export async function validateProductData(data: unknown) {
     - category: one of "Electronics", "Clothing", "Books", "Home Goods", "Groceries"
     - price: a positive number
     - stock: a non-negative integer
+    - description: string (optional, a brief summary of the product)
   `;
 
   // First, basic Zod validation to ensure structure is roughly correct for the AI
