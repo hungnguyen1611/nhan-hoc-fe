@@ -56,7 +56,11 @@ export function DataVisualization({ data }: { data: Product[] }) {
                 cursor={false}
                 content={<ChartTooltipContent indicator="dot" />}
               />
-              <Bar dataKey="count" fill="hsl(var(--primary))" radius={4} />
+              <Bar dataKey="count" radius={4}>
+                {categoryData.map((_, index) => (
+                  <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                ))}
+              </Bar>
             </BarChart>
           </ChartContainer>
         </CardContent>
