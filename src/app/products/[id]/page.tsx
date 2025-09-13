@@ -1,10 +1,11 @@
 "use client";
 
 import * as React from 'react';
-import { products } from '@/lib/data';
+import { useLiveQuery } from 'dexie-react-hooks';
+import { useParams, notFound } from 'next/navigation';
+import { db } from '@/lib/db';
 import { Product } from '@/lib/schema';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { notFound } from 'next/navigation';
 import { Header } from '@/components/header';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -13,52 +14,47 @@ import { EditDialog } from '@/components/data-forge/edit-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { Toaster } from '@/components/ui/toaster';
 
-const DATA_STORAGE_KEY = 'data-forge-products';
-
-export default function ProductDetailPage({ params }: { params: { id: string } }) {
+export default function ProductDetailPage() {
   const { toast } = useToast();
+  const params = useParams();
+  const id = typeof params.id === 'string' ? params.id : '';
+
   const [isEditing, setIsEditing] = React.useState(false);
 
-  const [productData, setProductData] = React.useState<Product[]>(() => {
-    try {
-      if (typeof window !== 'undefined') {
-        const storedData = localStorage.getItem(DATA_STORAGE_KEY);
-        return storedData ? JSON.parse(storedData) : products;
-      }
-    } catch (error) {
-      console.error("Failed to load data from local storage, using initial data.", error);
-    }
-    return products;
-  });
+  const product = useLiveQuery(() => db.products.get(id), [id]);
 
-  const product = productData.find((p) => p.id === params.id);
-
-  const handleUpdateProduct = (updatedProduct: Product) => {
-    const newData = productData.map(p => p.id === updatedProduct.id ? updatedProduct : p);
-    setProductData(newData);
+  const handleUpdateProduct = async (updatedProduct: Product) => {
     try {
-      localStorage.setItem(DATA_STORAGE_KEY, JSON.stringify(newData));
+      await db.products.put(updatedProduct);
+      setIsEditing(false);
+      toast({
+        title: "Success",
+        description: `Product "${updatedProduct.name}" has been updated.`,
+        className: 'bg-accent text-accent-foreground',
+      });
     } catch (error) {
-      console.error("Failed to save data to local storage.", error);
+      console.error("Failed to update product:", error);
       toast({
         variant: "destructive",
-        title: "Storage Error",
-        description: "Could not save data changes to your browser's local storage.",
+        title: "Database Error",
+        description: "Could not update the product in the local database.",
       });
     }
-    setIsEditing(false);
-    toast({
-      title: "Success",
-      description: `Product "${updatedProduct.name}" has been updated.`,
-      className: 'bg-accent text-accent-foreground',
-    });
   };
 
-  if (!product) {
-    const initialProduct = products.find((p) => p.id === params.id);
-    if (!initialProduct) {
-        notFound();
+  // The `product` can be `undefined` while loading, then the product object,
+  // or `undefined` again if not found.
+  const productExists = product !== undefined;
+  const isLoading = product === undefined;
+
+  // After loading, if product is still undefined, it's a 404.
+  React.useEffect(() => {
+    if (!isLoading && !productExists) {
+      notFound();
     }
+  }, [isLoading, productExists]);
+
+  if (isLoading || !productExists) {
     return (
         <div className="min-h-screen bg-background font-body">
             <Header />
@@ -69,7 +65,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         </div>
     );
   }
-
+  
   return (
     <div className="min-h-screen bg-background font-body">
       <Header />
