@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { MoreHorizontal, ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -58,7 +59,7 @@ export function DataTable({
   onSearchQueryChange: (query: string) => void;
   allProductIds: string[];
 }) {
-
+  const router = useRouter();
   const [sortKey, setSortKey] = React.useState<SortKey>('name');
   const [sortDirection, setSortDirection] = React.useState<SortDirection>('asc');
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -109,6 +110,10 @@ export function DataTable({
     }
   };
 
+  const handleRowClick = (productId: string) => {
+    router.push(`/products/${productId}`);
+  };
+
   const isAllSelected = selectedIds.size > 0 && selectedIds.size === allProductIds.length;
   const isIndeterminate = selectedIds.size > 0 && selectedIds.size < allProductIds.length;
 
@@ -157,8 +162,10 @@ export function DataTable({
                 <TableRow
                   key={product.id}
                   data-state={selectedIds.has(product.id) && 'selected'}
+                  onClick={() => handleRowClick(product.id)}
+                  className="cursor-pointer"
                 >
-                  <TableCell padding="checkbox">
+                  <TableCell padding="checkbox" onClick={(e) => e.stopPropagation()}>
                     <Checkbox
                       checked={selectedIds.has(product.id)}
                       onCheckedChange={(checked) => handleSelectRow(product.id, !!checked)}
@@ -167,7 +174,7 @@ export function DataTable({
                     />
                   </TableCell>
                   <TableCell className="font-medium">
-                    <Link href={`/products/${product.id}`} className="hover:underline">
+                    <Link href={`/products/${product.id}`} className="hover:underline" onClick={(e) => e.stopPropagation()}>
                       {product.name}
                     </Link>
                   </TableCell>
@@ -178,7 +185,7 @@ export function DataTable({
                   </TableCell>
                   <TableCell>${product.price.toFixed(2)}</TableCell>
                   <TableCell>{product.stock}</TableCell>
-                  <TableCell>
+                  <TableCell onClick={(e) => e.stopPropagation()}>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
