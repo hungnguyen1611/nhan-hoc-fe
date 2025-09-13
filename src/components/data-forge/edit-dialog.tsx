@@ -29,9 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Postcard, postcardSchema, postcardCategories } from '@/lib/schema';
-import { validatePostcardData } from '@/app/actions';
 import { Textarea } from '@/components/ui/textarea';
 
 interface EditDialogProps {
@@ -41,35 +39,16 @@ interface EditDialogProps {
 }
 
 export function EditDialog({ postcard, onOpenChange, onSave }: EditDialogProps) {
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [aiError, setAiError] = React.useState<string | null>(null);
-
   const form = useForm<Postcard>({
     resolver: zodResolver(postcardSchema),
     defaultValues: postcard,
   });
 
   const onSubmit = async (values: Postcard) => {
-    setIsSubmitting(true);
-    setAiError(null);
-    form.clearErrors();
-
-    const aiValidationResult = await validatePostcardData(values);
-
-    if (!aiValidationResult.isValid) {
-      setAiError(aiValidationResult.reasoning);
-      aiValidationResult.validationErrors.forEach(errorMsg => {
-        // Try to map AI error to a field
-        const field = (Object.keys(postcardSchema.shape) as (keyof Postcard)[]).find(key => errorMsg.toLowerCase().includes(key));
-        form.setError(field || "root.ai", { message: errorMsg });
-      });
-      setIsSubmitting(false);
-      return;
-    }
-    
     onSave(values);
-    setIsSubmitting(false);
   };
+
+  const isSubmitting = form.formState.isSubmitting;
 
   return (
     <Dialog open={true} onOpenChange={onOpenChange}>
@@ -77,17 +56,11 @@ export function EditDialog({ postcard, onOpenChange, onSave }: EditDialogProps) 
         <DialogHeader>
           <DialogTitle>Edit Postcard</DialogTitle>
           <DialogDescription>
-            Make changes to the postcard details. AI will verify your input.
+            Make changes to the postcard details.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-             {aiError && (
-                <Alert variant="destructive">
-                    <AlertTitle>AI Validation Failed</AlertTitle>
-                    <AlertDescription>{aiError}</AlertDescription>
-                </Alert>
-            )}
             <FormField
               control={form.control}
               name="name"
