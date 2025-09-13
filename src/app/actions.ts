@@ -33,3 +33,4 @@ export async function validatePostcardData(data: unknown) {
     return { isValid: false, validationErrors: ["AI validation service is unavailable."], reasoning: "Could not connect to the validation service." };
   }
 }
+

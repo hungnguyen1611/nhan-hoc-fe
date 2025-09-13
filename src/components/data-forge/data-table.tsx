@@ -111,7 +111,7 @@ export function DataTable({
   };
 
   const handleRowClick = (postcardId: string) => {
-    router.push(`/postcards/${postcardId}`);
+    router.push(`/products/${postcardId}`);
   };
 
   const isAllSelected = selectedIds.size > 0 && selectedIds.size === allPostcardIds.length;
@@ -174,7 +174,7 @@ export function DataTable({
                     />
                   </TableCell>
                   <TableCell className="font-medium">
-                    <Link href={`/postcards/${postcard.id}`} className="hover:underline" onClick={(e) => e.stopPropagation()}>
+                    <Link href={`/products/${postcard.id}`} className="hover:underline" onClick={(e) => e.stopPropagation()}>
                       {postcard.name}
                     </Link>
                   </TableCell>
