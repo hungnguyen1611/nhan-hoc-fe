@@ -16,4 +16,9 @@ export const postcards: Postcard[] = [
   { id: "a3b4c5d6", name: "Congratulations!", category: "Greeting", price: 3.99, stock: 180, description: "A celebratory card for achievements and special occasions." },
   { id: "b4c5d6e7", name: "Victorian Era London", category: "Vintage", price: 4.99, stock: 60, description: "A sepia-toned image of a bustling London street in the 1890s." },
   { id: "c5d6e7f8", name: "Happy New Year", category: "Holiday", price: 3.49, stock: 350, description: "A festive postcard with fireworks to celebrate the New Year." },
+  { id: "a2b3c4d5", name: "Roman Colosseum", category: "Travel", price: 1.99, stock: 190, description: "A majestic view of the ancient Roman Colosseum." },
+  { id: "b3c4d5e6", name: "The Persistence of Memory", category: "Art", price: 2.49, stock: 110, description: "A print of Salvador Dalí's surrealist masterpiece." },
+  { id: "c4d5e6f7", name: "Get Well Soon", category: "Greeting", price: 3.99, stock: 220, description: "A comforting card for someone who is feeling unwell." },
+  { id: "d5e6f7a8", name: "Classic Car Show", category: "Vintage", price: 4.99, stock: 50, description: "A postcard featuring a collection of shiny classic cars." },
+  { id: "e6f7a8b9", name: "Happy Thanksgiving", category: "Holiday", price: 3.49, stock: 280, description: "A warm and inviting postcard for Thanksgiving." },
 ];
