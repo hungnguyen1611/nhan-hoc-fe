@@ -1,4 +1,4 @@
-# Firebase Studio
+# Nhan Hoc
 
 This is a NextJS starter in Firebase Studio.
 
